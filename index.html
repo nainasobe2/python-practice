@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How's Your Mood?</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(255, 255, 255, 0.9);
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --happy-color: #fef08a;
+      --happy-border: #fde047;
+      --tired-color: #e0e7ff;
+      --tired-border: #c7d2fe;
+      --sad-color: #dbeafe;
+      --sad-border: #bfdbfe;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      padding: 20px;
+      transition: background 0.6s ease;
+    }
+
+    .container {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 40px 32px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    p.subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .mood-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    @media (min-width: 420px) {
+      .mood-buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    .btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 18px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: 18px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      outline: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .btn.active {
+      transform: scale(1.03);
+    }
+
+    .btn-happy {
+      background-color: #fef9c3;
+      color: #854d0e;
+      border-color: #fef08a;
+    }
+    .btn-happy:hover, .btn-happy.active {
+      background-color: #fef08a;
+      border-color: #eab308;
+    }
+
+    .btn-tired {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      border-color: #c7d2fe;
+    }
+    .btn-tired:hover, .btn-tired.active {
+      background-color: #c7d2fe;
+      border-color: #818cf8;
+    }
+
+    .btn-sad {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border-color: #bae6fd;
+    }
+    .btn-sad:hover, .btn-sad.active {
+      background-color: #bae6fd;
+      border-color: #38bdf8;
+    }
+
+    .message-card {
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 22px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px dashed rgba(148, 163, 184, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .message-card.has-message {
+      background: rgba(255, 255, 255, 0.95);
+      border-style: solid;
+      border-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .message-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .message-text {
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: #475569;
+    }
+
+    .placeholder-text {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(6px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>How's Your Mood?</h1>
+    <p class="subtitle">Select your mood below to brighten your day</p>
+
+    <div class="mood-buttons">
+      <button class="btn btn-happy" onclick="setMood('happy')">
+        <span>😊</span> Happy
+      </button>
+      <button class="btn btn-tired" onclick="setMood('tired')">
+        <span>😴</span> Tired
+      </button>
+      <button class="btn btn-sad" onclick="setMood('sad')">
+        <span>😔</span> Sad
+      </button>
+    </div>
+
+    <div id="messageCard" class="message-card">
+      <p id="placeholder" class="placeholder-text">Click any mood button above ✨</p>
+      <div id="messageContent" style="display: none;">
+        <h3 id="messageTitle" class="message-title"></h3>
+        <p id="messageText" class="message-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const moodData = {
+      happy: {
+        title: "Keep shining! ✨",
+        message: "Your positive energy is contagious! Enjoy this wonderful moment and spread that smile around.",
+        background: "linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fbcfe8 100%)",
+        textColor: "#854d0e"
+      },
+      tired: {
+        title: "Time to rest and recharge 🌙",
+        message: "You've worked hard today. Take a deep breath, grab some water, and remember that resting is productive too.",
+        background: "linear-gradient(135deg, #e0e7ff 0%, #ede9fe 50%, #fbcfe8 100%)",
+        textColor: "#3730a3"
+      },
+      sad: {
+        title: "Sending you a warm hug 💙",
+        message: "It's completely okay to feel down sometimes. Be gentle with yourself today—brighter days are just around the corner.",
+        background: "linear-gradient(135deg, #dbeafe 0%, #e0e7ff 50%, #fce7f3 100%)",
+        textColor: "#0369a1"
+      }
+    };
+
+    function setMood(moodKey) {
+      const data = moodData[moodKey];
+      if (!data) return;
+
+      // Update background smoothly to matching pastel tones
+      document.body.style.background = data.background;
+
+      // Update active button state
+      document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector(`.btn-${moodKey}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Update message card
+      const card = document.getElementById('messageCard');
+      const placeholder = document.getElementById('placeholder');
+      const content = document.getElementById('messageContent');
+      const title = document.getElementById('messageTitle');
+      const text = document.getElementById('messageText');
+
+      placeholder.style.display = 'none';
+      content.style.display = 'block';
+
+      title.textContent = data.title;
+      title.style.color = data.textColor;
+      text.textContent = data.message;
+
+      // Re-trigger animation
+      card.classList.remove('has-message');
+      void card.offsetWidth; // trigger reflow
+      card.classList.add('has-message');
+    }
+  </script>
+</body>
+</html>
+
